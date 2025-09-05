@@ -7,12 +7,13 @@ RUN apk update && apk upgrade && \
     apk add --no-cache curl && \
     rm -rf /var/cache/apk/*
 
-# Set working directory
-WORKDIR /app
-
-# Create non-root user
+# Create non-root user first
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001 -G nodejs
+
+# Set working directory and ensure proper ownership
+WORKDIR /app
+RUN chown -R nodejs:nodejs /app
 
 # Copy package files with correct ownership
 COPY --chown=nodejs:nodejs package*.json ./
