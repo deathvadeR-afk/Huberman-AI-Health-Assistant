@@ -24,8 +24,17 @@ USER nodejs
 # Install dependencies
 RUN npm ci && npm cache clean --force
 
-# Copy source code with correct ownership
-COPY --chown=nodejs:nodejs . .
+# Copy TypeScript configuration files first
+COPY --chown=nodejs:nodejs tsconfig*.json ./
+COPY --chown=nodejs:nodejs vite.config.ts ./
+COPY --chown=nodejs:nodejs tailwind.config.js ./
+COPY --chown=nodejs:nodejs postcss.config.js ./
+COPY --chown=nodejs:nodejs eslint.config.js ./
+
+# Copy source code and other files
+COPY --chown=nodejs:nodejs src/ ./src/
+COPY --chown=nodejs:nodejs public/ ./public/
+COPY --chown=nodejs:nodejs index.html ./
 
 # Build the application
 RUN npm run build
