@@ -36,9 +36,9 @@ jobs:
       working-directory: ./backend
       run: npm ci
 
-    - name: Run frontend tests
+    - name: Run frontend validation (TypeScript + Lint)
       working-directory: ./frontend
-      run: npm run test -- --run
+      run: npm run test
 
     - name: Run backend tests
       working-directory: ./backend
@@ -48,8 +48,12 @@ jobs:
       working-directory: ./frontend
       run: npm run build
 
-    - name: Lint code
+    - name: Lint frontend code
       working-directory: ./frontend
+      run: npm run lint
+
+    - name: Lint backend code
+      working-directory: ./backend
       run: npm run lint
 
   build-and-push:
