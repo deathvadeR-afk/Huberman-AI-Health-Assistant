@@ -1,12 +1,6 @@
 export default {
   testEnvironment: 'node',
   transform: {},
-  extensionsToTreatAsEsm: ['.js'],
-  globals: {
-    'ts-jest': {
-      useESM: true
-    }
-  },
   testMatch: [
     '**/tests/**/*.test.js',
     '**/tests/**/*.spec.js'
@@ -19,5 +13,7 @@ export default {
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
   setupFilesAfterEnv: [],
-  testTimeout: 10000
+  testTimeout: 10000,
+  moduleFileExtensions: ['js', 'json'],
+  testPathIgnorePatterns: ['/node_modules/']
 };

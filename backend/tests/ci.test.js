@@ -82,10 +82,10 @@ describe('Application Logic Tests', () => {
   
   test('Query validation logic', () => {
     const validateQuery = (query) => {
-      return query && 
-             typeof query === 'string' && 
-             query.trim().length >= 2 && 
-             query.length <= 1000;
+      return !!(query && 
+               typeof query === 'string' && 
+               query.trim().length >= 2 && 
+               query.length <= 1000);
     };
 
     expect(validateQuery('How can I improve my sleep?')).toBe(true);
@@ -97,11 +97,11 @@ describe('Application Logic Tests', () => {
 
   test('Video ID validation logic', () => {
     const validateVideoId = (id) => {
-      return id && 
-             typeof id === 'string' && 
-             id.length >= 3 && 
-             id.length <= 20 &&
-             /^[a-zA-Z0-9_-]+$/.test(id);
+      return !!(id && 
+               typeof id === 'string' && 
+               id.length >= 3 && 
+               id.length <= 20 &&
+               /^[a-zA-Z0-9_-]+$/.test(id));
     };
 
     expect(validateVideoId('SwQhKFMxmDY')).toBe(true);
