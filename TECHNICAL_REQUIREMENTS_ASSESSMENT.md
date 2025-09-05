@@ -39,7 +39,7 @@ All technical requirements have been implemented and the application is producti
 ## 3. AI Integration (OpenRouter - $2 Budget) - ✅ FULLY IMPLEMENTED
 
 ### ✅ **COMPLETED:**
-- OpenRouter API integration working (`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`)
+- OpenRouter API integration working
 - Cost-efficient model usage (GPT-3.5-turbo: ~$0.0003 per query)
 - Real AI processing for health queries
 - Budget tracking implemented
