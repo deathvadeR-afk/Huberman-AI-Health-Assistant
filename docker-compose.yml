@@ -1,0 +1,119 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database with pgvector extension
+  postgres:
+    image: pgvector/pgvector:pg15
+    container_name: huberman-postgres
+    environment:
+      POSTGRES_DB: huberman_health_ai
+      POSTGRES_USER: huberman_user
+      POSTGRES_PASSWORD: huberman_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - huberman-network
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: huberman-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - huberman-network
+
+  # Backend API Server
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: huberman-backend
+    ports:
+      - "3001:3001"
+      - "3002:3002"  # MCP Server
+      - "9090:9090"  # Prometheus metrics
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://huberman_user:huberman_password@postgres:5432/huberman_health_ai
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - huberman-network
+
+  # Frontend Next.js App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: huberman-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:3001/api
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - huberman-network
+
+  # Data Pipeline (runs on demand)
+  data-pipeline:
+    build:
+      context: ./data-pipeline
+      dockerfile: Dockerfile
+    container_name: huberman-data-pipeline
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://huberman_user:huberman_password@postgres:5432/huberman_health_ai
+    depends_on:
+      - postgres
+    volumes:
+      - ./data-pipeline:/app
+      - /app/node_modules
+      - pipeline_data:/app/data
+    networks:
+      - huberman-network
+    profiles:
+      - data-pipeline
+
+  # Prometheus for monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: huberman-prometheus
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    networks:
+      - huberman-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  pipeline_data:
+
+networks:
+  huberman-network:
+    driver: bridge

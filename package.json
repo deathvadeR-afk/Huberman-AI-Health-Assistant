@@ -1,0 +1,55 @@
+{
+  "name": "huberman-health-ai-assistant",
+  "version": "1.0.0",
+  "description": "AI-powered health assistant that searches Andrew Huberman's podcast library",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend",
+    "data-pipeline"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm run install:backend && npm run install:frontend && npm run install:data-pipeline",
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "install:data-pipeline": "cd data-pipeline && npm install",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:data-pipeline": "cd data-pipeline && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "test": "npm run test:backend && npm run test:frontend && npm run test:data-pipeline",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "test:data-pipeline": "cd data-pipeline && npm test",
+    "lint": "npm run lint:backend && npm run lint:frontend && npm run lint:data-pipeline",
+    "lint:backend": "cd backend && npm run lint",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:data-pipeline": "cd data-pipeline && npm run lint",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "scrape:all": "cd data-pipeline && npm run scrape:videos && npm run scrape:transcripts"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "health-ai",
+    "huberman",
+    "semantic-search",
+    "mcp-server",
+    "youtube-transcripts"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "googleapis": "^159.0.0"
+  }
+}

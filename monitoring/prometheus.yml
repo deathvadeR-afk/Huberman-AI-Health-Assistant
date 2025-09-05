@@ -1,0 +1,46 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Backend API metrics
+  - job_name: 'huberman-backend'
+    static_configs:
+      - targets: ['backend:9090']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # MCP Server metrics
+  - job_name: 'huberman-mcp-server'
+    static_configs:
+      - targets: ['backend:3002']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # PostgreSQL metrics (if using postgres_exporter)
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+    scrape_interval: 30s
+
+  # Redis metrics (if using redis_exporter)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+    scrape_interval: 30s
+
+  # Node.js application metrics
+  - job_name: 'node-app'
+    static_configs:
+      - targets: ['backend:3001']
+    metrics_path: '/api/metrics'
+    scrape_interval: 15s
