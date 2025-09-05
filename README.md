@@ -45,7 +45,7 @@ This application allows users to ask health-related questions and receive releva
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/deathvadeR-afk/Huberman-AI-Health-Assistant.git
    cd huberman-health-ai-assistant
    ```
 
